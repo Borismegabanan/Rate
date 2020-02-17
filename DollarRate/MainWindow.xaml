@@ -1,0 +1,23 @@
+﻿<Window x:Class="DollarRate.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:local="clr-namespace:DollarRate"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+    <StackPanel Grid.Column="1">
+        <Calendar Name="Calendar" SelectedDatesChanged="Calendar_OnSelectedDatesChanged" SelectionMode="SingleRange" ></Calendar>
+            <ComboBox Name="CurrenciesNames" Margin="10" >
+                <TextBlock>Доллар USA $</TextBlock>
+            </ComboBox>
+    </StackPanel>
+        <lvc:CartesianChart Series="{Binding DollarRateChart}" />
+    </Grid>
+</Window>
