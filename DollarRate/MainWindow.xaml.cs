@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using LiveCharts;
 using LiveCharts.Wpf;
+using MyLib;
 
 namespace DollarRate
 {
@@ -12,15 +13,23 @@ namespace DollarRate
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+
         /// <summary>
         /// Экземпляр графика
         /// </summary>
-        public SeriesCollection DollarRateChart { get; set; }
+        public SeriesCollection DollarRateChart
+        {
+            get => (SeriesCollection) GetValue(DollarRateChartProperty);
+            set => SetValue(DollarRateChartProperty, value);
+        }
+
+        public static readonly DependencyProperty DollarRateChartProperty = DependencyProperty.Register(
+            nameof(DollarRateChart), typeof(SeriesCollection), typeof(MainWindow));
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         /// <summary>
@@ -30,30 +39,27 @@ namespace DollarRate
         /// <param name="e"></param>
         private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            DateTime FirstDate = Calendar.SelectedDates.First();
-            DateTime LastDate = Calendar.SelectedDates.Last();
-            ChartBuilder(FirstDate,LastDate);
+            var firstDate = Calendar.SelectedDates.First();
+            var lastDate = Calendar.SelectedDates.Last();
+
+            DollarRateChart = BildChart(firstDate,lastDate);
         }
 
 
         /// <summary>
         /// Построение графика
         /// </summary>
-        /// <param name="FDateTime">Первая дата</param>
-        /// <param name="LDateTime">Последняя дата</param>
-        public void ChartBuilder(DateTime FDateTime, DateTime LDateTime)
+        /// <param name="fDateTime">Первая дата</param>
+        /// <param name="lDateTime">Последняя дата</param>
+        public static SeriesCollection BildChart(DateTime fDateTime, DateTime lDateTime)
         {
-            DataContext = null;
             //Код доллара
-            MyLib.Currency currency = new MyLib.Currency("R01235");
-            DollarRateChart = new SeriesCollection
+            var currency = new MyLib.Currency(ECurrencyType.USD);
+
+            return new SeriesCollection
             {
-                new LineSeries
-                {
-                    Values = new ChartValues<decimal>(currency.ValuesOfRange(FDateTime, LDateTime))
-                },
+                new LineSeries {Values = new ChartValues<decimal>(currency.ValuesOfRange(fDateTime, lDateTime))}
             };
-            DataContext = this;
         }
 
     }
